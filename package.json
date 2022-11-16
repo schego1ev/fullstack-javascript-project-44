@@ -19,5 +19,8 @@
     "url": "https://github.com/schego1ev/fullstack-javascript-project-44/issues"
   },
   "type": "module",
-  "homepage": "https://github.com/schego1ev/fullstack-javascript-project-44#readme"
+  "homepage": "https://github.com/schego1ev/fullstack-javascript-project-44#readme",
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  }
 }
