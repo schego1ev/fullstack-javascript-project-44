@@ -1,10 +1,11 @@
 import readlineSync from 'readline-sync';
 
-let name;
-let answer;
 const answerArray = ['yes', 'no'];
-let num;
-let reverseAnswer;
+let answer = '';
+let name = '';
+let num = 0;
+let reverseAnswer = '';
+let score = 0;
 
 const greeting = () => {
   console.log('Welcome to the Brain Games!');
@@ -20,41 +21,54 @@ const question = () => {
 };
 
 const checkEven = (checkNum) => checkNum % 2 === 0;
-
-const CorrectYes = (checkNum, UserAnswer) => checkEven(checkNum) && UserAnswer === answerArray[0];
-const CorrectNo = (checkNum, UserAnswer) => !checkEven(checkNum) && UserAnswer === answerArray[1];
-
-const errorMessage = (UserAnswer, reverse, UserName, checkNum) => {
-  if (answerArray.includes(UserAnswer)) {
-    console.log(`${UserAnswer} is wrong answer ;(. Correct answer was ${reverse}.\nLet's try again, ${UserName}!`);
-  } else if (checkEven(checkNum)) {
-    console.log(`${UserAnswer} is wrong answer ;(. Correct answer was ${answerArray[0]}.\nLet's try again, ${UserName}!`);
-  } else if (!checkEven(checkNum)) {
-    console.log(`${UserAnswer} is wrong answer ;(. Correct answer was ${answerArray[1]}.\nLet's try again, ${UserName}!`);
-  }
-};
+const CorrectYes = (checkNum, userAnswer) => checkEven(checkNum) && userAnswer === answerArray[0];
+const CorrectNo = (checkNum, userAnswer) => !checkEven(checkNum) && userAnswer === answerArray[1];
 
 const getAnswer = () => {
   answer = readlineSync.question('Your answer:');
   reverseAnswer = (answer === answerArray[0] ? answerArray[1] : answerArray[0]);
 };
 
+const correctMessage = () => {
+  console.log('Correct!');
+  score += 1;
+};
+
+const errorMessage = (userAnswer, reverse, UserName, checkNum) => {
+  if (answerArray.includes(userAnswer)) {
+    console.log(`${userAnswer} is wrong answer ;(. Correct answer was ${reverse}.\nLet's try again, ${UserName}!`);
+  } else if (checkEven(checkNum)) {
+    console.log(`${userAnswer} is wrong answer ;(. Correct answer was ${answerArray[0]}.\nLet's try again, ${UserName}!`);
+  } else if (!checkEven(checkNum)) {
+    console.log(`${userAnswer} is wrong answer ;(. Correct answer was ${answerArray[1]}.\nLet's try again, ${UserName}!`);
+  }
+};
+
+const checkAnswer = (checkNum, userAnswer) => CorrectYes(checkNum, userAnswer)
+  || CorrectNo(checkNum, userAnswer);
+
+const gameRound = () => {
+  question();
+  getAnswer();
+  if (checkAnswer(num, answer)) {
+    correctMessage();
+    checkScore();
+  } else {
+    return errorMessage(answer, reverseAnswer, name, num);
+  }
+};
+
+const checkScore = () => {
+  if (score === 3) {
+    console.log(`Congratulations, ${name}!`);
+  } else {
+    gameRound();
+  }
+};
+
 const evenGame = () => {
   greeting();
-  for (let i = 1; i <= 3; i += 1) {
-    question();
-    getAnswer();
-
-    if (CorrectYes(num, answer) || CorrectNo(num, answer)) {
-      console.log('Correct!');
-    } else {
-      return errorMessage(answer, reverseAnswer, name, num);
-    }
-
-    if (i === 3) {
-      console.log(`Congratulations, ${name}!`);
-    }
-  }
+  gameRound();
 };
 
 export default evenGame;
